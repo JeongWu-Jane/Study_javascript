@@ -1,0 +1,82 @@
+<script>const log = console.log;</script>
+
+# 제너레이터/이터레이터
+- 제너레이터: 이터레이터이자 이터러블을 생성하는 함수
+// 문장을 통해서 순회할수 있는 값을 만들수 있음. 어떠한 상태/값을 순회할 수 있게 만들수 있음
+// 다형성 높음
+//yield 키워드는 next()가 호출될 때 이터레이터가 리턴할 결과 값을 리턴될 순서대로 지정
+<script>
+  function* gen() {
+    yield 1;
+    if (false) yield 2;     // 1 3
+    yield 3;
+  }
+
+  let iter = gen();
+  log(iter[Symbol.iterator]() == iter);  //true
+  log(iter.next());
+  log(iter.next());
+  log(iter.next());
+  log(iter.next());
+
+  for (const a of gen()) log(a);    //순회할때 return 값 없이 순회 이루어짐
+  console.clear();
+</script>
+
+# odds
+
+<script>
+  /*  function* odds(l) {
+    for (let i=0;i<l;i++) {
+      if (i % 2) yield i;
+    }
+  }
+  */
+
+  function* infinity(i = 0) {
+    while (true) yield i++;
+  }
+0
+  function* limit(l, iter) {
+    for (const a of iter) {
+      yield a;
+      if (a == l) return;
+    }
+  }
+
+
+  function* odds(l) {
+    for (const a of limit(l, infinity(1))) {
+      if (a % 2) yield a;
+    }
+  }
+
+  let iter2 = odds(10);
+  log(iter2.next());
+  log(iter2.next());
+  log(iter2.next());
+  log(iter2.next());
+  log(iter2.next());
+  log(iter2.next());
+  log(iter2.next());
+
+  for (const a of odds(40)) log(a);
+
+  console.clear();
+</script>
+
+# for of, 전개 연산자, 구조 분해, 나머지 연산자 //이터러블--> 순회
+
+<script>
+  log(...odds(10));
+  log([...odds(10), ...odds(20)]);
+
+  const [head, ...tail] = odds(5);
+  log(head); //1
+  log(tail); //3 5
+
+  const [a, b, ...rest] = odds(10);
+  log(a); //1
+  log(b); //3
+  log(rest); //4 7 9
+</script>
